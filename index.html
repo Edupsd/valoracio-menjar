@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Valoració del menjar</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 30px 20px;
+
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+
+            margin-bottom: 15px;
+        }
+
+        select {
+            width: 100%;
+
+            padding: 15px;
+
+            font-size: 18px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 12px;
+
+            background: white;
+
+            margin-bottom: 30px;
+        }
+
+        .scale {
+            display: grid;
+
+            grid-template-columns: repeat(5, 1fr);
+
+            gap: 10px;
+
+            margin-bottom: 12px;
+        }
+
+        .score {
+            border: 2px solid #ddd;
+
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 15px 5px;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .score.selected {
+            background: #222;
+
+            color: white;
+
+            border-color: #222;
+        }
+
+        .labels {
+            display: flex;
+
+            justify-content: space-between;
+
+            color: #777;
+
+            font-size: 13px;
+
+            margin-bottom: 30px;
+        }
+
+        .submit {
+            width: 100%;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background: #222;
+
+            color: white;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .submit:disabled {
+            background: #ccc;
+
+            cursor: not-allowed;
+        }
+
+        #success {
+            display: none;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin-top: 20px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>Valora el menjar</h1>
+
+    <div class="subtitle">
+        Només et prendrà uns segons
+    </div>
+
+
+    <div class="question">
+        Quin àpat vols valorar?
+    </div>
+
+
+    <select id="meal">
+
+        <option value="">
+            Selecciona...
+        </option>
+
+        <option value="Esmorzar">
+            Esmorzar
+        </option>
+
+        <option value="Dinar">
+            Dinar
+        </option>
+
+        <option value="Sopar">
+            Sopar
+        </option>
+
+    </select>
+
+
+    <div class="question">
+
+        Grau de satisfacció general amb el menjar d'avui
+
+    </div>
+
+
+    <div class="scale">
+
+        <button class="score" data-score="1">1</button>
+
+        <button class="score" data-score="2">2</button>
+
+        <button class="score" data-score="3">3</button>
+
+        <button class="score" data-score="4">4</button>
+
+        <button class="score" data-score="5">5</button>
+
+        <button class="score" data-score="6">6</button>
+
+        <button class="score" data-score="7">7</button>
+
+        <button class="score" data-score="8">8</button>
+
+        <button class="score" data-score="9">9</button>
+
+        <button class="score" data-score="10">10</button>
+
+    </div>
+
+
+    <div class="labels">
+
+        <span>1 · Molt dolent</span>
+
+        <span>10 · Excel·lent</span>
+
+    </div>
+
+
+    <button
+        class="submit"
+        id="submit"
+        disabled>
+
+        Enviar valoració
+
+    </button>
+
+
+    <div id="success">
+
+        ✓ Gràcies per la teva valoració!
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+let selectedScore = null;
+
+
+const scoreButtons =
+    document.querySelectorAll(".score");
+
+
+const meal =
+    document.getElementById("meal");
+
+
+const submit =
+    document.getElementById("submit");
+
+
+const success =
+    document.getElementById("success");
+
+
+scoreButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        scoreButtons.forEach(btn => {
+
+            btn.classList.remove("selected");
+
+        });
+
+
+        button.classList.add("selected");
+
+
+        selectedScore =
+            button.dataset.score;
+
+
+        checkForm();
+
+    });
+
+});
+
+
+meal.addEventListener(
+    "change",
+    checkForm
+);
+
+
+function checkForm() {
+
+    if (
+        meal.value !== "" &&
+        selectedScore !== null
+    ) {
+
+        submit.disabled = false;
+
+    } else {
+
+        submit.disabled = true;
+
+    }
+
+}
+
+
+submit.addEventListener(
+    "click",
+    () => {
+
+        console.log({
+
+            meal: meal.value,
+
+            score: selectedScore,
+
+            date: new Date()
+
+        });
+
+
+        document.querySelector(
+            ".container"
+        ).innerHTML = `
+
+            <h1>✓ Gràcies!</h1>
+
+            <p>
+                La teva valoració s'ha registrat.
+            </p>
+
+            <p>
+                Gràcies per participar.
+            </p>
+
+        `;
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>
